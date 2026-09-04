@@ -21,7 +21,7 @@ The canonical machine-readable shape is documented in `schemas/decision-ledger.s
 
 Assumptions use `source: explicit` when directly stated in source material and `source: inferred` when proposed by an agent. Inferred assumptions must remain reviewable and must not be silently converted into user commitments.
 
-Evidence is a reference, not a truth claim. The engine can detect expiry by date, but cannot establish that a source was accurate, complete, or interpreted correctly.
+Evidence is a reference, not a truth claim. Evidence is considered expired on `observed_at + expires_after_days`, not one day later. The engine can detect expiry by date, but cannot establish that a source was accurate, complete, or interpreted correctly.
 
 ## State model
 
@@ -51,7 +51,7 @@ An alternative lists rule IDs in `reopen_when`. If any referenced rule triggers,
 
 ## Calibration
 
-A prediction contains a metric, lower and upper bounds, a unit, and optionally an actual value. Calibration is valid only when metric and unit semantics are unchanged. The runtime reports whether the actual value fell inside the range, distance to the nearest bound, and signed error from the midpoint.
+A prediction contains a metric, lower and upper bounds, a unit, and optionally an actual value. Every actual value requires `actual_observed_at`; outcomes after `review_date` are disclosed and excluded from an as-of calibration. Calibration is valid only when metric and unit semantics are unchanged. The runtime reports whether the actual value fell inside the range, distance to the nearest bound, and signed error from the midpoint.
 
 Do not aggregate a small number of predictions into claims about a person's general competence or bias.
 

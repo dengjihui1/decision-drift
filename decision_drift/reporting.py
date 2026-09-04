@@ -122,6 +122,17 @@ def render_calibration_markdown(report: dict[str, Any]) -> str:
             f"{low:g}–{high:g} | {item['actual']:g} | {item['range_position']} | "
             f"{item['distance_to_range']:g} |"
         )
+    if report["excluded_future_actual_ids"]:
+        lines.extend(
+            [
+                "",
+                "Future outcomes excluded by the review boundary: "
+                + ", ".join(
+                    f"`{prediction_id}`"
+                    for prediction_id in report["excluded_future_actual_ids"]
+                ),
+            ]
+        )
     lines.extend(["", f"> {report['warning']}", ""])
     return "\n".join(lines)
 

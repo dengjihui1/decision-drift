@@ -6,6 +6,7 @@
     "description": "A fictional project timeline used to demonstrate decision drift."
   },
   "prediction_count": 2,
+  "excluded_future_actual_ids": [],
   "range_hit_count": 1,
   "range_hit_rate": 0.5,
   "predictions": [
@@ -20,6 +21,7 @@
         60.0
       ],
       "actual": 85.0,
+      "actual_observed_at": "2026-07-01",
       "range_position": "ABOVE",
       "distance_to_range": 25.0,
       "signed_midpoint_error": 35.0,
@@ -36,6 +38,7 @@
         30.0
       ],
       "actual": 26.0,
+      "actual_observed_at": "2026-06-01",
       "range_position": "INSIDE",
       "distance_to_range": 0.0,
       "signed_midpoint_error": 1.0,

@@ -85,7 +85,7 @@ def _expired_evidence(decision: dict[str, Any], review_date: date) -> list[dict[
         if days is None:
             continue
         expiry_date = date.fromisoformat(evidence["observed_at"]) + timedelta(days=days)
-        if expiry_date < review_date:
+        if expiry_date <= review_date:
             expired.append(
                 {
                     "evidence_id": evidence["id"],
@@ -193,10 +193,16 @@ def check_ledger(ledger: dict[str, Any], events_document: dict[str, Any]) -> dic
 
 
 def calibrate_ledger(ledger: dict[str, Any]) -> dict[str, Any]:
+    review_date = date.fromisoformat(ledger["review_date"])
     results: list[dict[str, Any]] = []
+    excluded_future_actual_ids: list[str] = []
     for decision in ledger["decisions"]:
         for prediction in decision.get("predictions", []):
             if "actual" not in prediction:
+                continue
+            actual_observed_at = date.fromisoformat(prediction["actual_observed_at"])
+            if actual_observed_at > review_date:
+                excluded_future_actual_ids.append(prediction["id"])
                 continue
             lower = float(prediction["lower"])
             upper = float(prediction["upper"])
@@ -220,6 +226,7 @@ def calibrate_ledger(ledger: dict[str, Any]) -> dict[str, Any]:
                     "unit": prediction["unit"],
                     "predicted_range": [lower, upper],
                     "actual": actual,
+                    "actual_observed_at": prediction["actual_observed_at"],
                     "range_position": range_position,
                     "distance_to_range": distance,
                     "signed_midpoint_error": actual - midpoint,
@@ -231,6 +238,7 @@ def calibrate_ledger(ledger: dict[str, Any]) -> dict[str, Any]:
         "schema_version": "0.1.0",
         "project": deepcopy(ledger["project"]),
         "prediction_count": len(results),
+        "excluded_future_actual_ids": excluded_future_actual_ids,
         "range_hit_count": hits,
         "range_hit_rate": None if not results else hits / len(results),
         "predictions": results,

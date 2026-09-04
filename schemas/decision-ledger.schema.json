@@ -101,6 +101,10 @@
     "prediction": {
       "type": "object",
       "required": ["id", "metric", "lower", "upper", "unit"],
+      "dependentRequired": {
+        "actual": ["actual_observed_at"],
+        "actual_observed_at": ["actual"]
+      },
       "properties": {
         "id": {"type": "string", "minLength": 1},
         "metric": {"type": "string", "minLength": 1},

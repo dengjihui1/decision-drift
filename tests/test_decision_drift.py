@@ -54,6 +54,18 @@ class DecisionDriftTests(unittest.TestCase):
         self.assertEqual(sqlite["derived_status"], "AT_RISK")
         self.assertEqual(sqlite["expired_evidence"][0]["evidence_id"], "evidence-january-load-test")
 
+    def test_evidence_expires_on_boundary_date(self):
+        ledger = deepcopy(self.ledger)
+        evidence = ledger["decisions"][0]["evidence"][0]
+        evidence["observed_at"] = "2026-07-02"
+        evidence["expires_after_days"] = 30
+        ledger["review_date"] = "2026-08-01"
+        report = check_ledger(ledger, {"events": []})
+        self.assertEqual(
+            report["decisions"][0]["expired_evidence"][0]["expired_at"],
+            "2026-08-01",
+        )
+
     def test_replaced_decision_is_not_reactivated(self):
         ledger = deepcopy(self.ledger)
         ledger["decisions"][0]["status"] = "REPLACED"
@@ -102,6 +114,23 @@ class DecisionDriftTests(unittest.TestCase):
         positions = {item["prediction_id"]: item["range_position"] for item in report["predictions"]}
         self.assertEqual(positions["prediction-metadata-latency"], "ABOVE")
         self.assertEqual(positions["prediction-ticket-reduction"], "INSIDE")
+
+    def test_future_outcome_is_excluded_from_calibration(self):
+        ledger = deepcopy(self.ledger)
+        prediction = ledger["decisions"][0]["predictions"][0]
+        prediction["actual_observed_at"] = "2026-08-02"
+        report = calibrate_ledger(ledger)
+        self.assertEqual(report["prediction_count"], 1)
+        self.assertEqual(
+            report["excluded_future_actual_ids"],
+            ["prediction-metadata-latency"],
+        )
+
+    def test_actual_requires_observation_date(self):
+        ledger = deepcopy(self.ledger)
+        del ledger["decisions"][0]["predictions"][0]["actual_observed_at"]
+        errors = validate_ledger(ledger)
+        self.assertTrue(any("actual_observed_at is required" in error for error in errors))
 
     def test_unknown_reference_fails_validation(self):
         ledger = deepcopy(self.ledger)

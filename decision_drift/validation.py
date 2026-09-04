@@ -204,6 +204,10 @@ def validate_ledger(ledger: Any) -> list[str]:
                 errors.append(f"{p_path}.lower must not exceed upper")
             if "actual" in prediction and not isinstance(prediction.get("actual"), (int, float)):
                 errors.append(f"{p_path}.actual must be a number")
+            if "actual" in prediction and "actual_observed_at" not in prediction:
+                errors.append(f"{p_path}.actual_observed_at is required when actual is present")
+            if "actual_observed_at" in prediction and "actual" not in prediction:
+                errors.append(f"{p_path}.actual is required when actual_observed_at is present")
             for date_field in ("due_at", "actual_observed_at"):
                 if date_field in prediction and not _is_date(prediction.get(date_field)):
                     errors.append(f"{p_path}.{date_field} must be an ISO date")
