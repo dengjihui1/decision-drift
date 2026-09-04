@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dengjihui1/decision-drift/schemas/decision-ledger.schema.json",
+  "title": "Decision Drift Ledger",
+  "type": "object",
+  "required": ["schema_version", "project", "review_date", "decisions"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "project": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "name": {"type": "string", "minLength": 1},
+        "description": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "review_date": {"type": "string", "format": "date"},
+    "decisions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/decision"}
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "decision": {
+      "type": "object",
+      "required": ["id", "title", "made_at", "status", "choice", "rationale", "reversibility", "assumptions", "evidence", "alternatives", "predictions", "rules"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "title": {"type": "string", "minLength": 1},
+        "made_at": {"type": "string", "format": "date"},
+        "status": {"enum": ["ACTIVE", "AT_RISK", "STALE", "REPLACED"]},
+        "choice": {"type": "string", "minLength": 1},
+        "rationale": {"type": "string", "minLength": 1},
+        "owner": {"type": "string"},
+        "reversibility": {"enum": ["easy", "medium", "hard", "irreversible"]},
+        "next_review_at": {"type": "string", "format": "date"},
+        "assumptions": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/assumption"}
+        },
+        "evidence": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/evidence"}
+        },
+        "alternatives": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/alternative"}
+        },
+        "predictions": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/prediction"}
+        },
+        "rules": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/rule"}
+        },
+        "next_actions": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "assumption": {
+      "type": "object",
+      "required": ["id", "statement", "source", "confidence", "state"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "statement": {"type": "string", "minLength": 1},
+        "source": {"enum": ["explicit", "inferred"]},
+        "confidence": {"enum": ["low", "medium", "high"]},
+        "state": {"enum": ["unknown", "holding", "challenged", "invalidated"]}
+      },
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["id", "kind", "source", "observed_at", "supports"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "kind": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1},
+        "observed_at": {"type": "string", "format": "date"},
+        "expires_after_days": {"type": "integer", "minimum": 1},
+        "supports": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "alternative": {
+      "type": "object",
+      "required": ["id", "label", "rejected_because", "reopen_when"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "label": {"type": "string", "minLength": 1},
+        "rejected_because": {"type": "string", "minLength": 1},
+        "reopen_when": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "prediction": {
+      "type": "object",
+      "required": ["id", "metric", "lower", "upper", "unit"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "metric": {"type": "string", "minLength": 1},
+        "lower": {"type": "number"},
+        "upper": {"type": "number"},
+        "unit": {"type": "string", "minLength": 1},
+        "due_at": {"type": "string", "format": "date"},
+        "actual": {"type": "number"},
+        "actual_observed_at": {"type": "string", "format": "date"}
+      },
+      "additionalProperties": false
+    },
+    "rule": {
+      "type": "object",
+      "required": ["id", "assumption_id", "fact", "operator", "severity", "message"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "assumption_id": {"type": "string", "minLength": 1},
+        "fact": {"type": "string", "minLength": 1},
+        "operator": {"enum": ["eq", "ne", "gt", "gte", "lt", "lte", "contains", "not_contains", "in", "not_in", "changed_from", "exists"]},
+        "value": {},
+        "severity": {"enum": ["warning", "invalidate"]},
+        "message": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    }
+  }
+}
