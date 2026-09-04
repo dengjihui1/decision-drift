@@ -8,7 +8,7 @@ from pathlib import Path
 
 from decision_drift.cli import main
 from decision_drift.engine import calibrate_ledger, check_ledger, evaluate_rule
-from decision_drift.reporting import render_drift_markdown
+from decision_drift.reporting import render_drift_markdown, render_mermaid
 from decision_drift.validation import validate_events, validate_ledger
 
 
@@ -159,6 +159,13 @@ class DecisionDriftTests(unittest.TestCase):
         text = render_drift_markdown(report)
         self.assertIn("does not prove", text)
         self.assertIn("REOPENED", text)
+
+    def test_mermaid_identifiers_are_sanitized(self):
+        report = check_ledger(self.ledger, self.events)
+        report["decisions"][0]["decision_id"] = "decision id; click unsafe"
+        graph = render_mermaid(report)
+        self.assertIn("d_decision_id__click_unsafe", graph)
+        self.assertNotIn("d_decision id; click unsafe", graph)
 
 
 if __name__ == "__main__":

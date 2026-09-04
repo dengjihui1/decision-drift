@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 
@@ -141,19 +142,25 @@ def _mermaid_text(value: str) -> str:
     return value.replace('"', "'").replace("\n", " ")
 
 
+def _mermaid_id(prefix: str, *parts: str) -> str:
+    normalized = "_".join(parts)
+    normalized = re.sub(r"[^A-Za-z0-9_]", "_", normalized)
+    return f"{prefix}_{normalized}"
+
+
 def render_mermaid(report: dict[str, Any]) -> str:
     lines = ["flowchart LR"]
     for decision in report["decisions"]:
-        decision_id = f"d_{decision['decision_id'].replace('-', '_')}"
+        decision_id = _mermaid_id("d", decision["decision_id"])
         lines.append(
             f'  {decision_id}["{_mermaid_text(decision["title"])}\\n{decision["derived_status"]}"]'
         )
         for item in decision["triggered_rules"]:
-            rule_id = f"r_{item['rule_id'].replace('-', '_')}_{item['event_id'].replace('-', '_')}"
+            rule_id = _mermaid_id("r", item["rule_id"], item["event_id"])
             lines.append(f'  {rule_id}["{_mermaid_text(item["fact"])} = {_mermaid_text(str(item["observed"]))}"]')
             lines.append(f"  {rule_id} -->|{item['severity']}| {decision_id}")
         for alternative in decision["reopened_alternatives"]:
-            alt_id = f"a_{alternative['alternative_id'].replace('-', '_')}"
+            alt_id = _mermaid_id("a", alternative["alternative_id"])
             lines.append(f'  {alt_id}["Alternative: {_mermaid_text(alternative["label"])}"]')
             lines.append(f"  {decision_id} -.->|reopens| {alt_id}")
     return "\n".join(lines) + "\n"
