@@ -2,6 +2,8 @@
 
 > Memory that knows when it may be wrong.
 
+![Decision Drift icon](assets/decision-drift-icon.png)
+
 [![CI](https://github.com/dengjihui1/decision-drift/actions/workflows/ci.yml/badge.svg)](https://github.com/dengjihui1/decision-drift/actions/workflows/ci.yml)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-3776AB)](https://www.python.org/)
 [![MIT License](https://img.shields.io/badge/license-MIT-16A34A)](LICENSE)
