@@ -26,7 +26,7 @@
 ## Distribution
 
 - [x] Skill structure passes `quick_validate.py`.
-- [ ] Release ZIP contains no `.git`, cache, bytecode, or nested ZIP.
-- [ ] Tests pass after extracting the ZIP to a clean directory.
-- [ ] Exactly one final ZIP remains in the project folder.
-- [ ] Repository and portfolio index are pushed.
+- [x] Release ZIP contains no `.git`, cache, bytecode, or nested ZIP.
+- [x] Tests pass after extracting the ZIP to a clean directory.
+- [x] Exactly one final ZIP remains in the project folder.
+- [x] Repository is pushed and the portfolio index is updated.
