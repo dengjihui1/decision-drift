@@ -1,0 +1,5 @@
+interface:
+  display_name: "Decision Drift"
+  short_description: "Detect when decision assumptions stop holding"
+  brand_color: "#2563EB"
+  default_prompt: "Use $decision-drift to capture why my project decisions were made and check which premises now need review."
