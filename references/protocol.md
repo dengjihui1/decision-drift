@@ -43,6 +43,8 @@ An event is a dated observation with a flat or nested `facts` object and a sourc
 
 Absent facts evaluate to `UNOBSERVED`, not false. This prevents incomplete events from silently reassuring the user.
 
+Checks use time-safe replay: only events dated on or after a decision's `made_at` and on or before the ledger's `review_date` may affect that decision. Future-dated events are reported and excluded so an as-of audit cannot leak later knowledge into an earlier judgment.
+
 ## Counterfactual reopening
 
 An alternative lists rule IDs in `reopen_when`. If any referenced rule triggers, the alternative is surfaced as `REOPENED`; this is a prompt to compare options again, not a recommendation to adopt the alternative.

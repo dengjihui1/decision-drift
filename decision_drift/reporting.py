@@ -12,6 +12,7 @@ def render_drift_markdown(report: dict[str, Any]) -> str:
         "",
         f"Project: **{project['name']}**  ",
         f"Review date: **{report['review_date']}**",
+        f"Eligible events as of review date: **{report['event_window']['eligible_as_of_review_date']} / {report['event_window']['supplied']}**",
         "",
         "## Status summary",
         "",
@@ -38,7 +39,8 @@ def render_drift_markdown(report: dict[str, Any]) -> str:
             for item in decision["triggered_rules"]:
                 lines.append(
                     f"- **{item['severity'].upper()}** `{item['rule_id']}` via `{item['event_id']}`: "
-                    f"`{item['fact']}` observed as `{item['observed']}`. {item['message']}"
+                    f"`{item['fact']}` observed as `{item['observed']}`. {item['message']} "
+                    f"Source: `{item['event_source']}`"
                 )
         else:
             lines.append("- None observed.")
@@ -76,6 +78,18 @@ def render_drift_markdown(report: dict[str, Any]) -> str:
         else:
             lines.append("- No next action recorded; review before changing the decision.")
         lines.append("")
+
+    ignored_future = report["event_window"]["ignored_future_event_ids"]
+    if ignored_future:
+        lines.extend(
+            [
+                "## Time-safe replay",
+                "",
+                "Events dated after the review boundary were excluded: "
+                + ", ".join(f"`{event_id}`" for event_id in ignored_future),
+                "",
+            ]
+        )
 
     lines.extend(
         [

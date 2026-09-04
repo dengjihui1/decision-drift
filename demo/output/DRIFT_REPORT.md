@@ -2,6 +2,7 @@
 
 Project: **Synthetic Lab Platform**  
 Review date: **2026-08-01**
+Eligible events as of review date: **3 / 3**
 
 ## Status summary
 
@@ -19,8 +20,8 @@ Review date: **2026-08-01**
 
 ### Triggered premises
 
-- **INVALIDATE** `rule-multiple-writers` via `event-team-growth`: `team.concurrent_writers` observed as `4`. The local storage choice assumed a single writer.
-- **WARNING** `rule-data-growth` via `event-team-growth`: `data.metadata_size_gb` observed as `2.4`. Metadata reached the review threshold recorded in the original decision.
+- **INVALIDATE** `rule-multiple-writers` via `event-team-growth`: `team.concurrent_writers` observed as `4`. The local storage choice assumed a single writer. Source: `synthetic://project/change-requests/collaboration`
+- **WARNING** `rule-data-growth` via `event-team-growth`: `data.metadata_size_gb` observed as `2.4`. Metadata reached the review threshold recorded in the original decision. Source: `synthetic://project/change-requests/collaboration`
 
 ### Evidence freshness
 
@@ -49,7 +50,7 @@ Review date: **2026-08-01**
 
 ### Triggered premises
 
-- **WARNING** `rule-frontier-price-drop` via `event-model-price`: `model.frontier_input_cost_per_million_usd` observed as `1.5`. The cost reason for rejecting a larger model may no longer hold.
+- **WARNING** `rule-frontier-price-drop` via `event-model-price`: `model.frontier_input_cost_per_million_usd` observed as `1.5`. The cost reason for rejecting a larger model may no longer hold. Source: `synthetic://pricing/2026-07`
 
 ### Evidence freshness
 
@@ -78,7 +79,7 @@ Review date: **2026-08-01**
 
 ### Triggered premises
 
-- **INVALIDATE** `rule-new-metric-evidence` via `event-new-literature`: `literature.recovery_metric_supported` observed as `True`. New evidence directly challenges the premise used to omit the metric.
+- **INVALIDATE** `rule-new-metric-evidence` via `event-new-literature`: `literature.recovery_metric_supported` observed as `True`. New evidence directly challenges the premise used to omit the metric. Source: `synthetic://literature/recovery-review`
 
 ### Evidence freshness
 

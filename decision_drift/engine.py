@@ -54,6 +54,7 @@ def evaluate_rule(rule: dict[str, Any], event: dict[str, Any]) -> dict[str, Any]
         "rule_id": rule["id"],
         "event_id": event["id"],
         "event_date": event["observed_at"],
+        "event_source": event["source"],
         "fact": rule["fact"],
         "operator": rule["operator"],
         "expected": rule.get("value"),
@@ -99,12 +100,20 @@ def _expired_evidence(decision: dict[str, Any], review_date: date) -> list[dict[
 def check_ledger(ledger: dict[str, Any], events_document: dict[str, Any]) -> dict[str, Any]:
     review_date = date.fromisoformat(ledger["review_date"])
     events = events_document.get("events", [])
+    eligible_events = [
+        event for event in events if date.fromisoformat(event["observed_at"]) <= review_date
+    ]
+    ignored_future_event_ids = [
+        event["id"] for event in events if date.fromisoformat(event["observed_at"]) > review_date
+    ]
     decision_results: list[dict[str, Any]] = []
 
     for decision in ledger["decisions"]:
         made_at = date.fromisoformat(decision["made_at"])
         applicable_events = [
-            event for event in events if date.fromisoformat(event["observed_at"]) >= made_at
+            event
+            for event in eligible_events
+            if date.fromisoformat(event["observed_at"]) >= made_at
         ]
         evaluations = [
             evaluate_rule(rule, event)
@@ -173,6 +182,11 @@ def check_ledger(ledger: dict[str, Any], events_document: dict[str, Any]) -> dic
         "schema_version": "0.1.0",
         "project": deepcopy(ledger["project"]),
         "review_date": ledger["review_date"],
+        "event_window": {
+            "supplied": len(events),
+            "eligible_as_of_review_date": len(eligible_events),
+            "ignored_future_event_ids": ignored_future_event_ids,
+        },
         "summary": counts,
         "decisions": decision_results,
     }

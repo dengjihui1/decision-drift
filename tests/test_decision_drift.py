@@ -35,6 +35,12 @@ class DecisionDriftTests(unittest.TestCase):
         result = evaluate_rule(rule, event)
         self.assertEqual(result["state"], "UNOBSERVED")
 
+    def test_trigger_keeps_event_provenance(self):
+        rule = self.ledger["decisions"][0]["rules"][0]
+        event = self.events["events"][0]
+        result = evaluate_rule(rule, event)
+        self.assertEqual(result["event_source"], event["source"])
+
     def test_invalidation_and_counterfactual_reopening(self):
         report = check_ledger(self.ledger, self.events)
         sqlite = report["decisions"][0]
@@ -53,6 +59,41 @@ class DecisionDriftTests(unittest.TestCase):
         ledger["decisions"][0]["status"] = "REPLACED"
         report = check_ledger(ledger, self.events)
         self.assertEqual(report["decisions"][0]["derived_status"], "REPLACED")
+
+    def test_future_events_are_excluded_from_as_of_review(self):
+        events = deepcopy(self.events)
+        events["events"].append(
+            {
+                "id": "future-invalidation",
+                "observed_at": "2027-01-01",
+                "source": "synthetic://future",
+                "facts": {"team": {"concurrent_writers": 100}},
+            }
+        )
+        report = check_ledger(self.ledger, events)
+        self.assertEqual(report["event_window"]["eligible_as_of_review_date"], 3)
+        self.assertEqual(report["event_window"]["ignored_future_event_ids"], ["future-invalidation"])
+        triggered_event_ids = {
+            item["event_id"]
+            for decision in report["decisions"]
+            for item in decision["triggered_rules"]
+        }
+        self.assertNotIn("future-invalidation", triggered_event_ids)
+
+    def test_events_before_decision_are_not_applied(self):
+        events = {
+            "events": [
+                {
+                    "id": "pre-decision",
+                    "observed_at": "2025-12-01",
+                    "source": "synthetic://past",
+                    "facts": {"team": {"concurrent_writers": 100}},
+                }
+            ]
+        }
+        report = check_ledger(self.ledger, events)
+        sqlite = report["decisions"][0]
+        self.assertEqual(sqlite["triggered_rules"], [])
 
     def test_calibration_distinguishes_hit_and_miss(self):
         report = calibrate_ledger(self.ledger)
