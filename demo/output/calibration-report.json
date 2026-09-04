@@ -1,0 +1,46 @@
+{
+  "schema_version": "0.1.0",
+  "project": {
+    "id": "synthetic-lab-platform",
+    "name": "Synthetic Lab Platform",
+    "description": "A fictional project timeline used to demonstrate decision drift."
+  },
+  "prediction_count": 2,
+  "range_hit_count": 1,
+  "range_hit_rate": 0.5,
+  "predictions": [
+    {
+      "decision_id": "decision-local-store",
+      "decision_title": "Use SQLite for experiment metadata",
+      "prediction_id": "prediction-metadata-latency",
+      "metric": "p95 metadata write latency",
+      "unit": "ms",
+      "predicted_range": [
+        40.0,
+        60.0
+      ],
+      "actual": 85.0,
+      "range_position": "ABOVE",
+      "distance_to_range": 25.0,
+      "signed_midpoint_error": 35.0,
+      "relative_midpoint_error": 0.7
+    },
+    {
+      "decision_id": "decision-small-model",
+      "decision_title": "Use a compact model for triage",
+      "prediction_id": "prediction-ticket-reduction",
+      "metric": "manual triage reduction",
+      "unit": "percent",
+      "predicted_range": [
+        20.0,
+        30.0
+      ],
+      "actual": 26.0,
+      "range_position": "INSIDE",
+      "distance_to_range": 0.0,
+      "signed_midpoint_error": 1.0,
+      "relative_midpoint_error": 0.04
+    }
+  ],
+  "warning": "Calibration describes these recorded predictions only; it is not a global score of decision quality."
+}

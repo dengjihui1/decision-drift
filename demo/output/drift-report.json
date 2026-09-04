@@ -1,0 +1,350 @@
+{
+  "schema_version": "0.1.0",
+  "project": {
+    "id": "synthetic-lab-platform",
+    "name": "Synthetic Lab Platform",
+    "description": "A fictional project timeline used to demonstrate decision drift."
+  },
+  "review_date": "2026-08-01",
+  "summary": {
+    "ACTIVE": 0,
+    "AT_RISK": 1,
+    "STALE": 2,
+    "REPLACED": 0
+  },
+  "decisions": [
+    {
+      "decision_id": "decision-local-store",
+      "title": "Use SQLite for experiment metadata",
+      "choice": "Store experiment metadata in a local SQLite database.",
+      "previous_status": "ACTIVE",
+      "derived_status": "STALE",
+      "reversibility": "medium",
+      "review_overdue": true,
+      "triggered_rules": [
+        {
+          "rule_id": "rule-multiple-writers",
+          "event_id": "event-team-growth",
+          "event_date": "2026-06-10",
+          "fact": "team.concurrent_writers",
+          "operator": "gt",
+          "expected": 1,
+          "severity": "invalidate",
+          "message": "The local storage choice assumed a single writer.",
+          "state": "TRIGGERED",
+          "observed": 4
+        },
+        {
+          "rule_id": "rule-data-growth",
+          "event_id": "event-team-growth",
+          "event_date": "2026-06-10",
+          "fact": "data.metadata_size_gb",
+          "operator": "gte",
+          "expected": 1,
+          "severity": "warning",
+          "message": "Metadata reached the review threshold recorded in the original decision.",
+          "state": "TRIGGERED",
+          "observed": 2.4
+        }
+      ],
+      "expired_evidence": [
+        {
+          "evidence_id": "evidence-january-load-test",
+          "source": "synthetic://benchmarks/2026-01-load-test",
+          "expired_at": "2026-05-09",
+          "supports": [
+            "assumption-single-writer",
+            "assumption-small-data"
+          ]
+        }
+      ],
+      "reopened_alternatives": [
+        {
+          "alternative_id": "alternative-postgresql",
+          "label": "Move metadata to PostgreSQL",
+          "rejected_because": "Operational overhead was unnecessary for a single-user prototype.",
+          "triggered_by": [
+            "rule-data-growth",
+            "rule-multiple-writers"
+          ],
+          "state": "REOPENED"
+        }
+      ],
+      "unobserved_rule_ids": [],
+      "evaluation_errors": [],
+      "next_actions": [
+        "Run a 30-minute concurrent-write benchmark on the current workload.",
+        "Compare migration cost and operational burden before changing storage."
+      ],
+      "evaluations": [
+        {
+          "rule_id": "rule-multiple-writers",
+          "event_id": "event-team-growth",
+          "event_date": "2026-06-10",
+          "fact": "team.concurrent_writers",
+          "operator": "gt",
+          "expected": 1,
+          "severity": "invalidate",
+          "message": "The local storage choice assumed a single writer.",
+          "state": "TRIGGERED",
+          "observed": 4
+        },
+        {
+          "rule_id": "rule-multiple-writers",
+          "event_id": "event-model-price",
+          "event_date": "2026-07-01",
+          "fact": "team.concurrent_writers",
+          "operator": "gt",
+          "expected": 1,
+          "severity": "invalidate",
+          "message": "The local storage choice assumed a single writer.",
+          "state": "UNOBSERVED",
+          "observed": null
+        },
+        {
+          "rule_id": "rule-multiple-writers",
+          "event_id": "event-new-literature",
+          "event_date": "2026-07-20",
+          "fact": "team.concurrent_writers",
+          "operator": "gt",
+          "expected": 1,
+          "severity": "invalidate",
+          "message": "The local storage choice assumed a single writer.",
+          "state": "UNOBSERVED",
+          "observed": null
+        },
+        {
+          "rule_id": "rule-data-growth",
+          "event_id": "event-team-growth",
+          "event_date": "2026-06-10",
+          "fact": "data.metadata_size_gb",
+          "operator": "gte",
+          "expected": 1,
+          "severity": "warning",
+          "message": "Metadata reached the review threshold recorded in the original decision.",
+          "state": "TRIGGERED",
+          "observed": 2.4
+        },
+        {
+          "rule_id": "rule-data-growth",
+          "event_id": "event-model-price",
+          "event_date": "2026-07-01",
+          "fact": "data.metadata_size_gb",
+          "operator": "gte",
+          "expected": 1,
+          "severity": "warning",
+          "message": "Metadata reached the review threshold recorded in the original decision.",
+          "state": "UNOBSERVED",
+          "observed": null
+        },
+        {
+          "rule_id": "rule-data-growth",
+          "event_id": "event-new-literature",
+          "event_date": "2026-07-20",
+          "fact": "data.metadata_size_gb",
+          "operator": "gte",
+          "expected": 1,
+          "severity": "warning",
+          "message": "Metadata reached the review threshold recorded in the original decision.",
+          "state": "UNOBSERVED",
+          "observed": null
+        }
+      ]
+    },
+    {
+      "decision_id": "decision-small-model",
+      "title": "Use a compact model for triage",
+      "choice": "Use a compact model for first-pass issue triage.",
+      "previous_status": "ACTIVE",
+      "derived_status": "AT_RISK",
+      "reversibility": "easy",
+      "review_overdue": false,
+      "triggered_rules": [
+        {
+          "rule_id": "rule-frontier-price-drop",
+          "event_id": "event-model-price",
+          "event_date": "2026-07-01",
+          "fact": "model.frontier_input_cost_per_million_usd",
+          "operator": "lt",
+          "expected": 2,
+          "severity": "warning",
+          "message": "The cost reason for rejecting a larger model may no longer hold.",
+          "state": "TRIGGERED",
+          "observed": 1.5
+        }
+      ],
+      "expired_evidence": [],
+      "reopened_alternatives": [
+        {
+          "alternative_id": "alternative-larger-model",
+          "label": "Re-evaluate a larger model for difficult cases",
+          "rejected_because": "It exceeded the recorded input-token cost ceiling.",
+          "triggered_by": [
+            "rule-frontier-price-drop"
+          ],
+          "state": "REOPENED"
+        }
+      ],
+      "unobserved_rule_ids": [],
+      "evaluation_errors": [],
+      "next_actions": [
+        "Benchmark the compact and larger model on the same 100 synthetic issues."
+      ],
+      "evaluations": [
+        {
+          "rule_id": "rule-frontier-price-drop",
+          "event_id": "event-team-growth",
+          "event_date": "2026-06-10",
+          "fact": "model.frontier_input_cost_per_million_usd",
+          "operator": "lt",
+          "expected": 2,
+          "severity": "warning",
+          "message": "The cost reason for rejecting a larger model may no longer hold.",
+          "state": "UNOBSERVED",
+          "observed": null
+        },
+        {
+          "rule_id": "rule-frontier-price-drop",
+          "event_id": "event-model-price",
+          "event_date": "2026-07-01",
+          "fact": "model.frontier_input_cost_per_million_usd",
+          "operator": "lt",
+          "expected": 2,
+          "severity": "warning",
+          "message": "The cost reason for rejecting a larger model may no longer hold.",
+          "state": "TRIGGERED",
+          "observed": 1.5
+        },
+        {
+          "rule_id": "rule-frontier-price-drop",
+          "event_id": "event-new-literature",
+          "event_date": "2026-07-20",
+          "fact": "model.frontier_input_cost_per_million_usd",
+          "operator": "lt",
+          "expected": 2,
+          "severity": "warning",
+          "message": "The cost reason for rejecting a larger model may no longer hold.",
+          "state": "UNOBSERVED",
+          "observed": null
+        }
+      ]
+    },
+    {
+      "decision_id": "decision-drop-metric",
+      "title": "Exclude recovery time from the dashboard",
+      "choice": "Omit recovery time because the initial pilot found high measurement noise.",
+      "previous_status": "ACTIVE",
+      "derived_status": "STALE",
+      "reversibility": "easy",
+      "review_overdue": true,
+      "triggered_rules": [
+        {
+          "rule_id": "rule-new-metric-evidence",
+          "event_id": "event-new-literature",
+          "event_date": "2026-07-20",
+          "fact": "literature.recovery_metric_supported",
+          "operator": "eq",
+          "expected": true,
+          "severity": "invalidate",
+          "message": "New evidence directly challenges the premise used to omit the metric.",
+          "state": "TRIGGERED",
+          "observed": true
+        }
+      ],
+      "expired_evidence": [],
+      "reopened_alternatives": [
+        {
+          "alternative_id": "alternative-reintroduce-metric",
+          "label": "Reintroduce recovery time with repeated measurements",
+          "rejected_because": "The first pilot showed high noise and no separation.",
+          "triggered_by": [
+            "rule-new-metric-evidence"
+          ],
+          "state": "REOPENED"
+        }
+      ],
+      "unobserved_rule_ids": [
+        "rule-reliability-improved"
+      ],
+      "evaluation_errors": [],
+      "next_actions": [
+        "Read the cited method section before treating the external result as transferable.",
+        "Run a blinded repeated-measurement reliability pilot."
+      ],
+      "evaluations": [
+        {
+          "rule_id": "rule-new-metric-evidence",
+          "event_id": "event-team-growth",
+          "event_date": "2026-06-10",
+          "fact": "literature.recovery_metric_supported",
+          "operator": "eq",
+          "expected": true,
+          "severity": "invalidate",
+          "message": "New evidence directly challenges the premise used to omit the metric.",
+          "state": "UNOBSERVED",
+          "observed": null
+        },
+        {
+          "rule_id": "rule-new-metric-evidence",
+          "event_id": "event-model-price",
+          "event_date": "2026-07-01",
+          "fact": "literature.recovery_metric_supported",
+          "operator": "eq",
+          "expected": true,
+          "severity": "invalidate",
+          "message": "New evidence directly challenges the premise used to omit the metric.",
+          "state": "UNOBSERVED",
+          "observed": null
+        },
+        {
+          "rule_id": "rule-new-metric-evidence",
+          "event_id": "event-new-literature",
+          "event_date": "2026-07-20",
+          "fact": "literature.recovery_metric_supported",
+          "operator": "eq",
+          "expected": true,
+          "severity": "invalidate",
+          "message": "New evidence directly challenges the premise used to omit the metric.",
+          "state": "TRIGGERED",
+          "observed": true
+        },
+        {
+          "rule_id": "rule-reliability-improved",
+          "event_id": "event-team-growth",
+          "event_date": "2026-06-10",
+          "fact": "experiment.recovery_metric_icc",
+          "operator": "gte",
+          "expected": 0.8,
+          "severity": "warning",
+          "message": "Reliability may now be high enough to retest predictive value.",
+          "state": "UNOBSERVED",
+          "observed": null
+        },
+        {
+          "rule_id": "rule-reliability-improved",
+          "event_id": "event-model-price",
+          "event_date": "2026-07-01",
+          "fact": "experiment.recovery_metric_icc",
+          "operator": "gte",
+          "expected": 0.8,
+          "severity": "warning",
+          "message": "Reliability may now be high enough to retest predictive value.",
+          "state": "UNOBSERVED",
+          "observed": null
+        },
+        {
+          "rule_id": "rule-reliability-improved",
+          "event_id": "event-new-literature",
+          "event_date": "2026-07-20",
+          "fact": "experiment.recovery_metric_icc",
+          "operator": "gte",
+          "expected": 0.8,
+          "severity": "warning",
+          "message": "Reliability may now be high enough to retest predictive value.",
+          "state": "UNOBSERVED",
+          "observed": null
+        }
+      ]
+    }
+  ]
+}

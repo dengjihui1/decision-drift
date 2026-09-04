@@ -1,0 +1,31 @@
+{
+  "events": [
+    {
+      "id": "event-team-growth",
+      "observed_at": "2026-06-10",
+      "source": "synthetic://project/change-requests/collaboration",
+      "facts": {
+        "team": {"concurrent_writers": 4},
+        "data": {"metadata_size_gb": 2.4}
+      },
+      "notes": "The fictional project added four concurrent writers and passed 2 GB of metadata."
+    },
+    {
+      "id": "event-model-price",
+      "observed_at": "2026-07-01",
+      "source": "synthetic://pricing/2026-07",
+      "facts": {
+        "model": {"frontier_input_cost_per_million_usd": 1.5}
+      }
+    },
+    {
+      "id": "event-new-literature",
+      "observed_at": "2026-07-20",
+      "source": "synthetic://literature/recovery-review",
+      "facts": {
+        "literature": {"recovery_metric_supported": true}
+      },
+      "notes": "A fictional review motivates re-testing but is not treated as direct proof in this project."
+    }
+  ]
+}

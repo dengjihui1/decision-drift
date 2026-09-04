@@ -1,0 +1,18 @@
+flowchart LR
+  d_decision_local_store["Use SQLite for experiment metadata\nSTALE"]
+  r_rule_multiple_writers_event_team_growth["team.concurrent_writers = 4"]
+  r_rule_multiple_writers_event_team_growth -->|invalidate| d_decision_local_store
+  r_rule_data_growth_event_team_growth["data.metadata_size_gb = 2.4"]
+  r_rule_data_growth_event_team_growth -->|warning| d_decision_local_store
+  a_alternative_postgresql["Alternative: Move metadata to PostgreSQL"]
+  d_decision_local_store -.->|reopens| a_alternative_postgresql
+  d_decision_small_model["Use a compact model for triage\nAT_RISK"]
+  r_rule_frontier_price_drop_event_model_price["model.frontier_input_cost_per_million_usd = 1.5"]
+  r_rule_frontier_price_drop_event_model_price -->|warning| d_decision_small_model
+  a_alternative_larger_model["Alternative: Re-evaluate a larger model for difficult cases"]
+  d_decision_small_model -.->|reopens| a_alternative_larger_model
+  d_decision_drop_metric["Exclude recovery time from the dashboard\nSTALE"]
+  r_rule_new_metric_evidence_event_new_literature["literature.recovery_metric_supported = True"]
+  r_rule_new_metric_evidence_event_new_literature -->|invalidate| d_decision_drop_metric
+  a_alternative_reintroduce_metric["Alternative: Reintroduce recovery time with repeated measurements"]
+  d_decision_drop_metric -.->|reopens| a_alternative_reintroduce_metric
