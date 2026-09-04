@@ -24,7 +24,7 @@ Extract a meaningful decision from project notes, commits, experiment logs, requ
 
 ### Check
 
-Represent a new observation as an event, run it against the ledger, and explain each rule evaluation. A triggered warning can move a contract to `AT_RISK`; a triggered invalidation rule can move it to `STALE`. Never trigger a rule when its fact is absent.
+Represent a new observation as an event, run it against the ledger, and explain each rule evaluation. A triggered warning can move a contract to `AT_RISK`; a triggered invalidation rule can move it to `STALE`. Never trigger a rule when its fact is absent. Respect the as-of boundary: events before `made_at` or after `review_date` cannot affect the decision.
 
 ### Review
 

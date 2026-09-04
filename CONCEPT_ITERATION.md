@@ -22,3 +22,9 @@ Decision Drift is a local-first protocol and engine for memory that knows when i
 4. prediction-versus-outcome calibration.
 
 The MVP deliberately excludes automatic monitoring, probabilistic admission or success predictions, silent decision reversal, and claims that a triggered rule proves the original decision was bad.
+
+## Round 4 — Time-safe replay
+
+A retrospective audit is unreliable if it can accidentally use knowledge that did not exist at the chosen review date. The engine therefore evaluates each decision only against events inside its temporal window: on or after `made_at` and on or before `review_date`. It exposes excluded future event IDs in the report instead of silently dropping them.
+
+This makes the protocol useful for reproducible postmortems and research-method audits. Two people replaying the same ledger, events, and review date receive the same result without hindsight leaking through the event set.

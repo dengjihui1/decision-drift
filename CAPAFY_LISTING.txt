@@ -1,0 +1,40 @@
+TITLE
+Decision Drift
+
+TAGLINE
+Memory that knows when it may be wrong.
+
+SHORT DESCRIPTION
+Turn project or research decisions into living contracts that detect stale assumptions, expired evidence, and alternatives worth reopening.
+
+FULL DESCRIPTION
+Decision Drift is a local-first Skill and deterministic Python engine for decisions that outlive their original context. It records not only what was chosen, but why it was reasonable, which assumptions support it, when evidence expires, which alternatives were rejected, and what observable change should trigger review.
+
+When new events arrive, Decision Drift produces an explainable as-of audit. Missing facts remain UNOBSERVED. Future-dated events are excluded. Triggered premises retain their source and date. Rejected alternatives can re-enter consideration when their original rejection condition changes. Numerical predictions can be compared with actual outcomes without scoring the user's overall ability.
+
+USE IT FOR
+- software and architecture choices;
+- research-design and methodology decisions;
+- product bets and operational policies;
+- postmortems that must avoid hindsight leakage.
+
+INPUTS
+Decision notes, project context, dated observations, and optional numerical outcomes. Private material can remain local.
+
+OUTPUTS
+A validated decision ledger, event file, Markdown drift report, JSON audit trail, Mermaid decision graph, and calibration report.
+
+BOUNDARY
+The agent flags premises for review. It does not prove a decision was wrong, choose a replacement, modify code, or contact third parties without separate authorization.
+
+SAMPLE PROMPT
+Use Decision Drift to turn these project notes into a living decision contract. Separate explicit facts from inferred assumptions, propose only observable review triggers, and mark any missing information as UNKNOWN.
+
+SUPPORT EMAIL
+dengjihuiii@163.com
+
+SUGGESTED LAUNCH PRICE
+US$6.99 one-time, or the closest platform price tier. Use a temporary 30% launch discount if Capafy supports it; do not list it as free.
+
+CATEGORY
+Productivity / Developer Tools / Research
