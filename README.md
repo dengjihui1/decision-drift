@@ -1,5 +1,7 @@
 # Decision Drift
 
+![Jihui](assets/brand/jihui-wordmark.png)
+
 > Memory that knows when it may be wrong.
 
 ![Decision Drift icon](assets/decision-drift-icon.png)
